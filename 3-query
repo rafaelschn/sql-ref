@@ -1,0 +1,11 @@
+CREATE VIEW view_elements_level AS
+  WITH RECURSIVE
+    rec(id, parent, level) 
+    AS (
+      SELECT elements.id, elements.parent, 1 FROM elements 
+      UNION ALL 
+      SELECT rec.id, e.parent, level+1 FROM rec INNER JOIN elements e ON rec.parent = e.id WHERE rec.parent IS NOT NULL LIMIT 10000
+    )
+  SELECT * FROM rec WHERE parent IS NULL ORDER BY level, id;
+
+SELECT id, level FROM view_elements_level;
